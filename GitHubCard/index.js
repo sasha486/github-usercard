@@ -1,3 +1,4 @@
+import axios from "axios";
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
@@ -27,8 +28,38 @@
     Using that array, iterate over it, requesting data for each user, creating a new card for each
     user, and adding that card to the DOM.
 */
+// ---------------- step 1: axios request ----------------------
+const entryPoint = document.querySelector(".cards");
 
-const followersArray = [];
+axios
+  .get("https://api.github.com/users/sasha486")
+  .then((res) => {
+    // -------------- step 2: study the data returned ---------------------
+    const myCard = githubCard(res.data);
+    entryPoint.appendChild(myCard);
+    // console.log(res.data);
+  })
+  .catch((error) => console.log("not happening", error));
+
+const followersArray = [
+  "tetondan",
+  "dustinmyers",
+  "justsml",
+  "luishrd",
+  "bigknell",
+];
+
+followersArray.forEach((follower) => {
+  axios
+    .get(`https://api.github.com/users/${follower}`)
+    .then((res) => {
+      const followerData = res.data;
+      entryPoint.appendChild(gitHubCard);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -58,3 +89,50 @@ const followersArray = [];
     luishrd
     bigknell
 */
+
+// ------------ step 3: create a function for the card markup --------------------
+
+const githubCard = (data) => {
+  const card = document.createElement("div");
+  const image = document.createElement("img");
+  const cardInfo = document.createElement("div");
+  const name = document.createElement("h3");
+  const username = document.createElement("p");
+  const location = document.createElement("p");
+  const profile = document.createElement("p");
+  const address = document.createElement("a");
+  const followers = document.createElement("p");
+  const following = document.createElement("p");
+  const bio = document.createElement("p");
+
+  // ---------------------- step 4: pass data in and append -----------------
+  image.src = data.avatar_url;
+  name.textContent = data.name;
+  username.textContent = data.login;
+  location.textContent = `Location: ${data.location}`;
+  profile.textContent = data.profile;
+  address.href = obj.html_url;
+  followers.textContent = data.followers;
+  following.textContent = data.following;
+  bio.textContent = data.bio;
+
+  card.classList.add("card");
+  cardInfo.classList.add("card-info");
+  name.classList.add("name");
+  username.classList.add("username");
+
+  card.append(
+    image,
+    cardInfo,
+    name,
+    username,
+    location,
+    profile,
+    address,
+    followers,
+    following,
+    bio
+  );
+
+  return card;
+};
